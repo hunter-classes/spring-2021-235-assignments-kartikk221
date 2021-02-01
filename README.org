@@ -1,10 +1,10 @@
 * Fall 2021 235 Assignments
 
-* Last name:
+* Last name: Kumar
 
-* First name:
+* First name: Kartik
 
-* GitHub username:
+* GitHub username: kartikk221
 
 * Notes:
 
