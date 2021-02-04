@@ -1,10 +1,43 @@
 #include <iostream>
 #include <map>
 
+/* Fibonacci - Recursive No Cache */
 int fib(int n){
     return n <= 1 ? n : fib(n - 1) + fib(n - 2);
 }
 
+/* Fibonacci - Recursive Cache Map */
+std::map<int, int> fib_cache = {};
+int fib_cache_register(int n){
+    if(n <= 1) return n;
+    int a = n - 1;
+    int b = n - 2;
+
+    if(fib_cache.count(a) > 0){
+        a = fib_cache[a];
+    } else {
+        a = fib_cache_register(a);
+        fib_cache[n - 1] = a;
+    }
+
+    if(fib_cache.count(b) > 0){
+        b = fib_cache[b];
+        fib_cache[n - 2] = b;
+    } else {
+        b = fib_cache_register(b);
+    }
+
+    return a + b;
+}
+
+int fib_cache_calculate(int n){
+    for(int i = 0; i < n; i++){
+        fib_cache_register(n);
+    }
+    return fib_cache_register(n);
+}
+
+/* Fibonacci - Loop */
 int fib_iter(int n){
     int prev_number = 0;
     int next_number = 1;
@@ -35,8 +68,11 @@ int stepPerms(int n) {
 }
 
 int main(){
-    std::cout << "Fibonacci Sequence Recursive @ (n = 9) -> " << fib(9) << std::endl;
-    std::cout << "Fibonacci Sequence Loop @ (n = 9) -> " << fib_iter(9) << std::endl;
-    std::cout << "David's Staircase Possibilities For 10 Stairs @ (n = 10) -> " << stepPerms(10) << std::endl;
+    // std::cout << "Fibonacci Sequence Recursive @ (n = 9) -> " << fib(9) << std::endl;
+    // std::cout << "Fibonacci Sequence Loop @ (n = 9) -> " << fib_iter(9) << std::endl;
+    for(int i = 0; i < 500; i++){
+        std::cout << "fibonacci @ " << i << " -> " <<  fib_cache_calculate(i) << std::endl;
+    }
+
     return 0;
 }
