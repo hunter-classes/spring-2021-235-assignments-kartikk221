@@ -4,7 +4,6 @@ using namespace std;
 // Node Structure
 struct Node {
   int data;
-  int size;
   Node *left;
   Node *right;
 
@@ -12,7 +11,6 @@ struct Node {
     this->data = val;
     this->left = NULL;
     this->right = NULL;
-    this->size = 0;
   }
 };
 
@@ -103,6 +101,58 @@ void btree_print_recur(Node *root, int space) {
 // Wrapper over btree_print_recur()
 void btree_print(Node *root) { btree_print_recur(root, 0); }
 
+int btree_count_leaves(Node *root) {
+  // Handle base case
+  if (root == NULL)
+    return 0;
+
+  // Handle no children case
+  if (root->left == NULL && root->right == NULL) {
+    return 1;
+  } else {
+    // Recursively count and add leaves from both subtrees
+    return btree_count_leaves(root->left) + btree_count_leaves(root->right);
+  }
+}
+
+int btree_level_count(Node *root, int target_level, int current_level = 1) {
+  // Handle no children scenario
+  if (root == NULL)
+    return 0;
+
+  // Recursively search subtrees and add result
+  if (current_level < target_level) {
+    return btree_level_count(root->left, target_level, current_level + 1) +
+           btree_level_count(root->right, target_level, current_level + 1);
+  }
+
+  return 1;
+}
+
+int btree_count(Node *root) {
+  // Handle empty root scenario
+  if (root == NULL)
+    return 0;
+  // Recursively search further and count self as 1 depth
+  return 1 + btree_count(root->left) + btree_count(root->right);
+}
+
+int btree_depth(Node *node) {
+  // Handle base case
+  if (node == NULL)
+    return 0;
+
+  // Compute sub-depth of both sides
+  int left_depth = btree_depth(node->left);
+  int right_depth = btree_depth(node->right);
+
+  // To count absolute depth, return the larger side sub-depth + 1
+  if (left_depth > right_depth)
+    return (left_depth + 1);
+  else
+    return (right_depth + 1);
+}
+
 int main() {
   cout << "Creating Binary Tree & Populating..." << endl;
   Node *tree = new Node(1);
@@ -114,6 +164,10 @@ int main() {
   btree_insert(tree, -7);
   btree_insert(tree, -68);
 
+  cout << "Tree Node Count: " << btree_count(tree) << endl;
+  cout << "Tree Leaves Count: " << btree_count_leaves(tree) << endl;
+  cout << "Nodes Count @ Level 4: " << btree_level_count(tree, 4) << endl;
+  cout << "Tree Depth: " << btree_depth(tree) << endl;
   cout << "Printing Tree: " << endl;
   btree_print(tree);
 
@@ -124,6 +178,10 @@ int main() {
   cout << "Deleted 2" << endl;
   cout << "Deleted -68" << endl;
 
+  cout << "Tree Node Count: " << btree_count(tree) << endl;
+  cout << "Tree Leaves Count: " << btree_count_leaves(tree) << endl;
+  cout << "Nodes Count @ Level 3: " << btree_level_count(tree, 3) << endl;
+  cout << "Tree Depth: " << btree_depth(tree) << endl;
   cout << "Printing Tree: " << endl;
   btree_print(tree);
 
